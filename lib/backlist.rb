@@ -1,4 +1,5 @@
 require "backlist/version"
+require "backlist/config"
 require "fileutils"
 
 module Backlist
