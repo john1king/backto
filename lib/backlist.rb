@@ -24,6 +24,23 @@ module Backlist
       end
     end
 
+    def exclude?(path, is_dir)
+      full_path = File.join('/', path)
+      exclude_patterns.any? do |pattern, match_dir|
+        next false if match_dir && !is_dir
+        File.fnmatch? pattern, full_path, File::FNM_PATHNAME | File::FNM_DOTMATCH
+      end
+    end
+
+    def exclude_patterns
+      @exclude_patterns ||= @config[:exclude_patterns].map do |pattern|
+        normalized = pattern.dup
+        match_dir = normalized.chomp!('/') != nil
+        normalized = '/**/' + normalized unless normalized.start_with?('/')
+        [normalized, match_dir]
+      end
+    end
+
     def link_directory?(path)
       if @config[:link_directory].is_a? Array
         @config[:link_directory].include? path
@@ -54,12 +71,10 @@ module Backlist
         next if name == '.' || name == '..'
         rel_path = path ? File.join(path, name) : name
         full_path = File.join(parent, name)
-        if File.directory? full_path
-          blk.call(rel_path, true)
-          scan_directory(full_path, rel_path, &blk) if recursive? rel_path
-        else
-          blk.call(rel_path, false)
-        end
+        is_dir = File.directory? full_path
+        next if exclude? rel_path, is_dir
+        blk.call(rel_path, is_dir)
+        scan_directory(full_path, rel_path, &blk) if is_dir && recursive?(rel_path)
       end
     end
 

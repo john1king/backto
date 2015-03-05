@@ -5,10 +5,18 @@ module Backlist
 
   class Config
 
+    EXCLUDE_PATTERNS = [
+      '.git',
+      '.svn',
+      '.DS_Store',
+      '*.swp',
+    ].freeze
+
     DEFAULT = {
       link_direcotry: false,
       verbose: true,
       force: false,
+      exclude_patterns: EXCLUDE_PATTERNS,
     }.freeze
 
     def initialize(config = {})
