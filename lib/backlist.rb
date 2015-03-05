@@ -13,9 +13,12 @@ module Backlist
     def run(opts = {})
       scan_directory(source_path) do |path, is_dir|
         if is_dir
-          mkdirs target_path(path), verbose: true
+          mkdirs target_path(path), verbose: @config[:verbose]
         else
-          ln_s source_path(path), target_path(path), force: true, verbose: true
+          ln_s source_path(path), target_path(path), {
+            force: @config[:force],
+            verbose: @config[:verbose]
+          }
         end
       end
     end

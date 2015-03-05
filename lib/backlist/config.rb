@@ -5,6 +5,11 @@ module Backlist
 
   class Config
 
+    DEFAULT = {
+      verbose: true,
+      force: false,
+    }.freeze
+
     def initialize(config = {})
       if config.is_a? String
         @config = JSON.parse(File.read(config), symbolize_names: true)
@@ -27,8 +32,10 @@ module Backlist
       method = name.to_sym
       if respond_to? method
         send method
-      else
+      elsif @config.key? method
         @config[method]
+      else
+        DEFAULT[method]
       end
     end
 
