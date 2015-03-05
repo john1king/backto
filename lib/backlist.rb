@@ -11,17 +11,34 @@ module Backlist
       @config = config
     end
 
-    def run(opts = {})
+    def run
       scan_directory(source_path) do |path, is_dir|
         if is_dir && !link_directory?(path)
           mkdirs target_path(path), verbose: @config[:verbose]
         else
-          ln_s source_path(path), target_path(path), {
-            force: @config[:force],
-            verbose: @config[:verbose]
-          }
+          args = [
+            source_path(path),
+            target_path(path),
+            {
+              verbose: @config[:verbose],
+              force: @config[:force],
+            }
+          ]
+          if @config[:hardlink] && !is_dir
+            hardlink *args
+          else
+            softlink *args
+          end
         end
       end
+    end
+
+    def hardlink(source, target, opts)
+      FileUtils.ln source, target, opts
+    end
+
+    def softlink(source, target, opts)
+      FileUtils.ln_s source, target, opts
     end
 
     def exclude?(path, is_dir)
@@ -51,10 +68,6 @@ module Backlist
 
     def mkdirs(path, opts = {})
       FileUtils.mkdir_p path, opts unless File.exist? path
-    end
-
-    def ln_s(source, target, opts = {})
-      FileUtils.ln_s source, target, opts
     end
 
     def source_path(path='.')

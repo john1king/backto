@@ -13,9 +13,10 @@ module Backlist
     ].freeze
 
     DEFAULT = {
-      link_direcotry: false,
       verbose: true,
       force: false,
+      hardlink: false,
+      link_direcotry: false,
       exclude_patterns: EXCLUDE_PATTERNS,
     }.freeze
 
