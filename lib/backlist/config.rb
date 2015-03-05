@@ -6,6 +6,7 @@ module Backlist
   class Config
 
     DEFAULT = {
+      link_direcotry: false,
       verbose: true,
       force: false,
     }.freeze
