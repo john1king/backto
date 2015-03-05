@@ -1,0 +1,7 @@
+#! /usr/bin/env ruby
+
+require "backlist"
+
+if ARGV[0]
+  Backlist::Execute.new(ARGV[0]).run
+end

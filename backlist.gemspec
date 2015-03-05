@@ -8,8 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = Backlist::VERSION
   spec.authors       = ["john1king"]
   spec.email         = ["uifantasy@gmail.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
+  spec.summary       = %q{A simple command line tool for backup files to one location (e.g. Dropbox). *nix Only.}
   spec.homepage      = ""
   spec.license       = "MIT"
 
