@@ -27,8 +27,8 @@ module Backlist
     def exclude?(path, is_dir)
       full_path = File.join('/', path)
       exclude_patterns.any? do |pattern, match_dir|
-        next false if match_dir && !is_dir
-        File.fnmatch? pattern, full_path, File::FNM_PATHNAME | File::FNM_DOTMATCH
+        matched = File.fnmatch? pattern, full_path, File::FNM_PATHNAME | File::FNM_DOTMATCH
+        matched && (match_dir ? is_dir : true)
       end
     end
 
