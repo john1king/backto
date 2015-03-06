@@ -12,13 +12,13 @@ module Backto
     end
 
     def run
-      scan_directory(source_path) do |path, is_dir|
+      scan_directory(from_path) do |path, is_dir|
         if is_dir && !link_directory?(path)
-          mkdirs target_path(path), verbose: @config[:verbose]
+          mkdirs to_path(path), verbose: @config[:verbose]
         else
           args = [
-            source_path(path),
-            target_path(path),
+            from_path(path),
+            to_path(path),
             {
               verbose: @config[:verbose],
               force: @config[:force],
@@ -70,15 +70,15 @@ module Backto
       FileUtils.mkdir_p path, opts unless File.exist? path
     end
 
-    def source_path(path='.')
-      File.expand_path File.join(@config[:source_path], path)
+    def from_path(path='.')
+      File.expand_path File.join(@config[:from], path)
     end
 
-    def target_path(path='.')
-      File.expand_path File.join(@config[:target_path], path)
+    def to_path(path='.')
+      File.expand_path File.join(@config[:to], path)
     end
 
-    # only return the relate part of srouce path
+    # only return the relate part of source path
     def scan_directory(parent, path = nil, &blk)
       Dir.foreach(parent) do |name|
         next if name == '.' || name == '..'

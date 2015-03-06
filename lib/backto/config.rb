@@ -30,12 +30,12 @@ module Backto
       end
     end
 
-    def source_path
-      str @base_path + fetch(:source_path)
+    def from
+      str @base_path + fetch(:from)
     end
 
-    def target_path
-      str @base_path + fetch(:target_path)
+    def to
+      str @base_path + fetch(:to)
     end
 
     def [](name)
