@@ -1,5 +1,4 @@
 require "json"
-require "pathname"
 
 module Backto
 
@@ -23,19 +22,19 @@ module Backto
     def initialize(config = {})
       if config.is_a? String
         @config = JSON.parse(File.read(config), symbolize_names: true)
-        @base_path = Pathname.new(config).dirname.expand_path
+        @base_path = File.expand_path(File.dirname(config))
       else
         @config = config
-        @base_path = Pathname.pwd
+        @base_path = Dir.pwd
       end
     end
 
     def from
-      str @base_path + fetch(:from)
+      File.expand_path fetch(:from), @base_path
     end
 
     def to
-      str @base_path + fetch(:to)
+      File.expand_path fetch(:to), @base_path
     end
 
     def [](name)
@@ -54,11 +53,6 @@ module Backto
     def fetch(name)
       @config.fetch(name)
     end
-
-    def str(obj)
-      obj.to_s
-    end
-
   end
 
 end
