@@ -36,13 +36,21 @@ module Backto
     end
 
     def hardlink(source, target, opts)
+      begin
+        FileUtils.ln source, target, opts
+      rescue Errno::EEXIST
+        raise unless hardlink? target, source
+      end
       notify(source, target, 'hardlink')
-      FileUtils.ln source, target, opts
     end
 
     def softlink(source, target, opts)
+      begin
+        FileUtils.ln_s source, target, opts
+      rescue Errno::EEXIST
+        raise unless softlink? target, source
+      end
       notify(source, target, 'softlink')
-      FileUtils.ln_s source, target, opts
     end
 
     def exclude?(path, is_dir)
