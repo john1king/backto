@@ -1,0 +1,7 @@
+#! /usr/bin/env ruby
+
+require "backto"
+
+if ARGV[0]
+  Backto::Execute.new(ARGV[0]).run
+end

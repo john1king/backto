@@ -1,7 +1,7 @@
 require "json"
 require "pathname"
 
-module Backlist
+module Backto
 
   class Config
 

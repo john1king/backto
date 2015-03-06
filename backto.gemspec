@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'backlist/version'
+require 'backto/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "backlist"
-  spec.version       = Backlist::VERSION
+  spec.name          = "backto"
+  spec.version       = Backto::VERSION
   spec.authors       = ["john1king"]
   spec.email         = ["uifantasy@gmail.com"]
   spec.summary       = %q{A simple command line tool for backup files to one location (e.g. Dropbox). *nix Only.}

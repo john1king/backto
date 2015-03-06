@@ -1,8 +1,8 @@
-require "backlist/version"
-require "backlist/config"
+require "backto/version"
+require "backto/config"
 require "fileutils"
 
-module Backlist
+module Backto
 
   class Execute
 
