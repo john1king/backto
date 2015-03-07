@@ -4,19 +4,23 @@ module Backto
 
   class Config
 
+    LAST_BACKTO_FILE = '.last_backto'
+
     EXCLUDE_PATTERNS = [
       '.git',
       '.svn',
       '.DS_Store',
       '*.swp',
+      LAST_BACKTO_FILE,
     ].freeze
 
     DEFAULT = {
       verbose: true,
       force: false,
       hardlink: false,
-      link_direcotry: false,
+      link_directory: false,
       exclude_patterns: EXCLUDE_PATTERNS,
+      clean_link: false,
     }.freeze
 
     def initialize(config = {})
@@ -30,11 +34,15 @@ module Backto
     end
 
     def from
-      File.expand_path fetch(:from), @base_path
+      @from ||= expand_path fetch(:from)
     end
 
     def to
-      File.expand_path fetch(:to), @base_path
+      @to ||= expand_path fetch(:to)
+    end
+
+    def last_backto_file
+      expand_path(@config[:last_backto_file]) || File.join(to, LAST_BACKTO_FILE)
     end
 
     def [](name)
@@ -49,6 +57,10 @@ module Backto
     end
 
     private
+
+    def expand_path(path)
+      File.expand_path path, @base_path
+    end
 
     def fetch(name)
       @config.fetch(name)
