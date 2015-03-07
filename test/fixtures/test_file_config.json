@@ -1,0 +1,5 @@
+{
+  "from": "./foo",
+  "to": "./bar",
+  "verbose": false
+}
