@@ -18,7 +18,7 @@ module Backto
       verbose: true,
       force: false,
       hardlink: false,
-      link_direcotry: false,
+      link_directory: false,
       exclude_patterns: EXCLUDE_PATTERNS,
       clean_link: false,
     }.freeze

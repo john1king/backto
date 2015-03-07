@@ -11,7 +11,7 @@ module Backto
       config = Config.new(config) unless config.is_a? Config
       @config = config
       @back_files = {}
-      @scanner = Scanner.new(from_path, @config[:exclude_patterns], @config[:link_direcotry])
+      @scanner = Scanner.new(from_path, @config[:exclude_patterns], @config[:link_directory])
     end
 
     def run
