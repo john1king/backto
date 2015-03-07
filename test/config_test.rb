@@ -17,6 +17,12 @@ class ConfigTest < Minitest::Test
     end
   end
 
+  def test_absoute_path
+    config = Backto::Config.new({from: '/foo', to: '/bar'})
+    assert_equal config[:from], '/foo'
+    assert_equal config[:to], '/bar'
+  end
+
   def test_expand_user_path
     config = Backto::Config.new({from: '~/foo', to: '~root/foo'})
     assert_equal config[:from], File.expand_path('~/foo')
