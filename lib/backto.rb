@@ -47,10 +47,13 @@ module Backto
     end
 
     def softlink(source, target, opts)
-      begin
-        FileUtils.ln_s source, target, opts
-      rescue Errno::EEXIST
-        raise unless softlink? target, source
+      unless softlink? target, source
+        if File.directory?(target) && File.directory?(source)
+          FileUtils.rm_r target, opts if opts[:force]
+          FileUtils.ln_s source, File.dirname(target), opts
+        else
+          FileUtils.ln_s source, target, opts
+        end
       end
       notify(source, target, 'softlink')
     end

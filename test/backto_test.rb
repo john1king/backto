@@ -69,6 +69,36 @@ class BacktoTest < Minitest::Test
     refute to.symlink? 'a/b/c'
   end
 
+  def test_link_directory_when_target_exist
+    from = TempTree.new do |t|
+      t.mkdir 'a'
+    end
+
+    to = TempTree.new do |t|
+      t.mkdir 'a'
+    end
+    assert_raises Errno::EEXIST do
+      Backto::Execute.new({from: from.dir, to: to.dir, verbose: false, link_directory: true}).run
+    end
+    assert to.directory? 'a'
+    refute to.exist? 'a/a'
+  end
+
+  def test_force_link_directory_when_target_exist
+    from = TempTree.new do |t|
+      t.mkdir 'a'
+    end
+
+    to = TempTree.new do |t|
+      t.file 'a/b'
+    end
+    Backto::Execute.new({from: from.dir, to: to.dir, verbose: false, force: true, link_directory: true}).run
+    assert to.symlink? 'a'
+    refute to.exist? 'a/b'
+    Backto::Execute.new({from: from.dir, to: to.dir, verbose: false, force: true, link_directory: true}).run
+    refute to.exist? 'a/a'
+  end
+
   def test_exclude_patterns
     from = TempTree.new do |t|
       t.file 'a/b/c'
