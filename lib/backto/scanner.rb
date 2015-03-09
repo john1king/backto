@@ -1,3 +1,5 @@
+require "backto/path"
+
 module Backto
 
   class Scanner
@@ -19,42 +21,40 @@ module Backto
     end
 
     def each(&block)
-      scan(@entry, nil, &block)
+      scan Path.new(@entry), &block
     end
 
     private
 
-    # only return the relate part of source path
-    def scan(parent, path = nil, &block)
-      Dir.foreach(parent) do |name|
+    def scan(parent, &block)
+      Dir.foreach(parent.absolute) do |name|
         next if name == '.' || name == '..'
-        rel_path = path ? File.join(path, name) : name
-        full_path = File.join(parent, name)
-        is_dir = File.directory? full_path
-        next if exclude? rel_path, is_dir
-        is_recursive = is_dir && recursive?(rel_path)
-        block.call(rel_path, is_dir, is_recursive)
-        scan(full_path, rel_path, &block) if is_recursive
+        path = parent.join(name)
+        next if exclude? path
+        is_recursive = recursive?(path)
+        block.call(path, is_recursive)
+        scan(path, &block) if is_recursive
       end
     end
 
-    def exclude?(path, is_dir)
-      full_path = File.join('/', path)
+    def exclude?(path)
+      test_path = File.join('/', path.relative)
       exclude_patterns.any? do |pattern, match_dir|
-        fnmatch?(pattern, full_path) && (match_dir ? is_dir : true)
+        fnmatch?(pattern, test_path) && (match_dir ? path.directory? : true)
       end
     end
 
     def recursive?(path)
+      return false unless path.directory?
       if @skip_recursive.is_a? Array
-        !@skip_recursive.include? path
+        !@skip_recursive.include? path.relative
       else
         !@skip_recursive
       end
     end
 
-    def fnmatch?(pattern, path)
-       File.fnmatch? pattern, path, File::FNM_PATHNAME | File::FNM_DOTMATCH
+    def fnmatch?(pattern, path_name)
+       File.fnmatch? pattern, path_name, File::FNM_PATHNAME | File::FNM_DOTMATCH
     end
   end
 

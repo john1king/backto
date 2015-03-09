@@ -12,7 +12,7 @@ class BacktoTest < Minitest::Test
     end
 
     to = TempTree.new
-    Backto::Execute.new({from: from.dir, to: to.dir, verbose: false}).run
+    Backto.run({from: from.dir, to: to.dir, verbose: false})
 
     assert to.symlink? 'a/b/c'
     assert to.directory? 'a/d'
@@ -25,7 +25,7 @@ class BacktoTest < Minitest::Test
     end
 
     to = TempTree.new
-    Backto::Execute.new({from: from.dir, to: to.dir, verbose: false, hardlink: true}).run
+    Backto.run({from: from.dir, to: to.dir, verbose: false, hardlink: true})
 
     assert_equal from.inode('a/b/c'), to.inode('a/b/c')
     assert to.directory? 'a/d'
@@ -40,7 +40,7 @@ class BacktoTest < Minitest::Test
       t.file 'a/b/c'
     end
     assert_raises Errno::EEXIST do
-      Backto::Execute.new({from: from.dir, to: to.dir, verbose: false}).run
+      Backto.run({from: from.dir, to: to.dir, verbose: false})
     end
     assert to.file? 'a/b/c'
   end
@@ -55,7 +55,7 @@ class BacktoTest < Minitest::Test
     end
 
     refute to.symlink? 'a/b/c'
-    Backto::Execute.new({from: from.dir, to: to.dir, verbose: false, force: true}).run
+    Backto.run({from: from.dir, to: to.dir, verbose: false, force: true})
     assert to.symlink? 'a/b/c'
   end
 
@@ -64,7 +64,7 @@ class BacktoTest < Minitest::Test
       t.file 'a/b/c'
     end
     to = TempTree.new
-    Backto::Execute.new({from: from.dir, to: to.dir, verbose: false, link_directory: true}).run
+    Backto.run({from: from.dir, to: to.dir, verbose: false, link_directory: true})
     assert to.symlink? 'a'
     refute to.symlink? 'a/b/c'
   end
@@ -78,7 +78,7 @@ class BacktoTest < Minitest::Test
       t.mkdir 'a'
     end
     assert_raises Errno::EEXIST do
-      Backto::Execute.new({from: from.dir, to: to.dir, verbose: false, link_directory: true}).run
+      Backto.run({from: from.dir, to: to.dir, verbose: false, link_directory: true})
     end
     assert to.directory? 'a'
     refute to.exist? 'a/a'
@@ -92,10 +92,10 @@ class BacktoTest < Minitest::Test
     to = TempTree.new do |t|
       t.file 'a/b'
     end
-    Backto::Execute.new({from: from.dir, to: to.dir, verbose: false, force: true, link_directory: true}).run
+    Backto.run({from: from.dir, to: to.dir, verbose: false, force: true, link_directory: true})
     assert to.symlink? 'a'
     refute to.exist? 'a/b'
-    Backto::Execute.new({from: from.dir, to: to.dir, verbose: false, force: true, link_directory: true}).run
+    Backto.run({from: from.dir, to: to.dir, verbose: false, force: true, link_directory: true})
     refute to.exist? 'a/a'
   end
 
@@ -105,7 +105,7 @@ class BacktoTest < Minitest::Test
       t.file 'foo'
     end
     to = TempTree.new
-    Backto::Execute.new({from: from.dir, to: to.dir, verbose: false, exclude_patterns: ['f*']}).run
+    Backto.run({from: from.dir, to: to.dir, verbose: false, exclude_patterns: ['f*']})
     assert to.symlink? 'a/b/c'
     refute to.exist? 'foo'
   end
