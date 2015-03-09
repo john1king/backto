@@ -6,7 +6,7 @@ class ScannerTest < Minitest::Test
 
 
   def scan_result(*args)
-    Backto::Scanner.new(*args).to_enum.to_a.map(&:first)
+    Backto::Scanner.new(*args).to_enum.to_a.map(&:first).map(&:relative)
   end
 
   def assert_equal_set(expected, actual)
