@@ -59,7 +59,7 @@ module Backto
   class Execute
 
     def initialize(config)
-      @config = config.is_a?(Config) ? config : Config.new(config)
+      @config = Config.create(config)
     end
 
     def run

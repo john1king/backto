@@ -23,6 +23,10 @@ module Backto
       clean_link: false,
     }.freeze
 
+    def self.create(config)
+      config.is_a?(self) ? config : new(config)
+    end
+
     def initialize(config = {})
       if config.is_a? String
         @config = JSON.parse(File.read(config), symbolize_names: true)
