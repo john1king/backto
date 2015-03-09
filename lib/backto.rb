@@ -5,6 +5,23 @@ require "fileutils"
 
 module Backto
 
+  class Path
+
+    def initialize(config, path)
+      @config = config
+      @path = path
+    end
+
+    def target
+      File.expand_path File.join(@config[:to], @path)
+    end
+
+    def source
+      File.expand_path File.join(@config[:from], @path)
+    end
+
+  end
+
   class Execute
 
     def initialize(config)
@@ -15,47 +32,37 @@ module Backto
     end
 
     def run
+      link_opts = {verbose: @config[:verbose], force: @config[:force]}
       @scanner.each do |path, is_dir, is_recursive|
+        path = Path.new(@config, path)
         if is_dir && is_recursive
-          mkdirs to_path(path), verbose: @config[:verbose]
+          mkdirs path.target, verbose: @config[:verbose]
         else
-          args = [
-            from_path(path),
-            to_path(path),
-            {
-              verbose: @config[:verbose],
-              force: @config[:force],
-            }
-          ]
-          if @config[:hardlink] && !is_dir
-            hardlink *args
-          else
-            softlink *args
-          end
+          @config[:hardlink] && !is_dir ? hardlink(path, link_opts) : softlink(path, link_opts)
         end
       end
       clean_link
     end
 
-    def hardlink(source, target, opts)
+    def hardlink(path, opts)
       begin
-        FileUtils.ln source, target, opts
+        FileUtils.ln path.source, path.target, opts
       rescue Errno::EEXIST
-        raise unless hardlink? target, source
+        raise unless hardlink? path.target, path.source
       end
-      notify(source, target, 'hardlink')
+      notify(path.source, path.target, 'hardlink')
     end
 
-    def softlink(source, target, opts)
-      unless softlink? target, source
-        if File.directory?(target) && File.directory?(source)
-          FileUtils.rm_r target, opts if opts[:force]
-          FileUtils.ln_s source, File.dirname(target), opts
+    def softlink(path, opts)
+      unless softlink? path.target, path.source
+        if File.directory?(path.target) && File.directory?(path.source)
+          FileUtils.rm_r path.target, opts if opts[:force]
+          FileUtils.ln_s path.source, File.dirname(path.target), opts
         else
-          FileUtils.ln_s source, target, opts
+          FileUtils.ln_s path.source, path.target, opts
         end
       end
-      notify(source, target, 'softlink')
+      notify(path.source, path.target, 'softlink')
     end
 
     def mkdirs(path, opts = {})
