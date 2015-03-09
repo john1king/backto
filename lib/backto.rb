@@ -20,8 +20,8 @@ module Backto
       @source ||= File.expand_path File.join(@config[:from], @path)
     end
 
-    def link_options
-      @link_options ||= {verbose: @config[:verbose], force: @config[:force]}
+    def mkdirs
+      FileUtils.mkdir_p target, verbose: @config[:verbose] unless File.exist? target
     end
 
     def hardlink
@@ -50,34 +50,28 @@ module Backto
       false
     end
 
+    def link_options
+      @link_options ||= {verbose: @config[:verbose], force: @config[:force]}
+    end
+
   end
 
   class Execute
-    attr_reader :config
 
     def initialize(config)
-      config = Config.new(config) unless config.is_a? Config
-      @config = config
-      @scanner = Scanner.new(from_path, @config[:exclude_patterns], @config[:link_directory])
+      @config = config.is_a?(Config) ? config : Config.new(config)
     end
 
     def run
-      @scanner.each do |path, is_dir, is_recursive|
+      scanner = Scanner.new(@config[:from], @config[:exclude_patterns], @config[:link_directory])
+      scanner.each do |path, is_dir, is_recursive|
         path = Path.new(@config, path)
         if is_dir && is_recursive
-          mkdirs path.target, verbose: @config[:verbose]
+          path.mkdirs
         else
           @config[:hardlink] && !is_dir ? path.hardlink : path.softlink
         end
       end
-    end
-
-    def mkdirs(path, opts = {})
-      FileUtils.mkdir_p path, opts unless File.exist? path
-    end
-
-    def from_path(path='.')
-      File.expand_path File.join(@config[:from], path)
     end
 
   end
