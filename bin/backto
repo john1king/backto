@@ -3,5 +3,5 @@
 require "backto"
 
 if ARGV[0]
-  Backto::Execute.new(ARGV[0]).run
+  Backto.run(ARGV[0])
 end
