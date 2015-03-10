@@ -1,31 +1,39 @@
 # Backto
 
-TODO: Write a gem description
+A simple command line tool for backup files to one location.
 
 ## Installation
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'backto'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
 
     $ gem install backto
 
 ## Usage
 
-TODO: Write usage instructions here
+Example of backup Sublime Text 3 config to your Dropbox. You may have some files like below in `~/Dropbox/SublimeText3`
 
-## Contributing
+```
+├── Installed\ Packages
+│   ├── 0_package_control_loader.sublime-package
+│   └── Package\ Control.sublime-package
+└── Packages
+    └── User
+        ├── Default\ (OSX).sublime-keymap
+        ├── Package\ Control.sublime-settings
+        └── Preferences.sublime-settings
+```
 
-1. Fork it ( https://github.com/john1king/backto/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+Just wirte a json config file in `~/Dropbox/sublimetext3.json` like
+
+```json
+{
+    "form": "./SublimeText3",
+    "to": "~/Library/Application Support/Sublime Text 3"
+}
+
+```
+
+And then execute
+
+```
+$ backto ~/Dropbox/sublimetext3.json
+```
+

@@ -4,4 +4,6 @@ require "backto"
 
 if ARGV[0]
   Backto.run(ARGV[0])
+else
+  puts 'Usage: backto <CONFIG>'
 end

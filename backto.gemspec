@@ -8,8 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Backto::VERSION
   spec.authors       = ["john1king"]
   spec.email         = ["uifantasy@gmail.com"]
-  spec.summary       = %q{A simple command line tool for backup files to one location (e.g. Dropbox). *nix Only.}
-  spec.homepage      = ""
+  spec.summary       = %q{Link files easier}
+  spec.description   = %q{A simple command line tool for backup files to one location}
+  spec.homepage      = "https://github.com/john1king/backto"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
