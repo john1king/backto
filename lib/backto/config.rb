@@ -4,14 +4,11 @@ module Backto
 
   class Config
 
-    LAST_BACKTO_FILE = '.last_backto'
-
     EXCLUDE_PATTERNS = [
       '.git',
       '.svn',
       '.DS_Store',
       '*.swp',
-      LAST_BACKTO_FILE,
     ].freeze
 
     DEFAULT = {
@@ -43,10 +40,6 @@ module Backto
 
     def to
       @to ||= expand_path fetch(:to)
-    end
-
-    def last_backto_file
-      expand_path(@config[:last_backto_file]) || File.join(to, LAST_BACKTO_FILE)
     end
 
     def [](name)
